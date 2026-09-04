@@ -170,7 +170,11 @@ const summary = {
   sessions_by_source: countBy("$pageview", "traffic_source"),
   bookings_by_source: countBy("booking_completed", "traffic_source"),
   abandoned_at_field: countBy("booking_abandoned", "last_field"),
-  subjects_requested: countBy("subject_requested", "subject")
+  subjects_requested: countBy("subject_requested", "subject"),
+  /* unique sessions reaching each step, not raw event counts */
+  sessions_reaching: ["$pageview","tutor_viewed","booking_started","booking_completed"]
+    .reduce((m, ev) => (m[ev] = new Set(queue.filter(e => e.event === ev)
+      .map(e => e.properties.distinct_id)).size, m), {})
 };
 require("fs").writeFileSync("simulation-summary.json", JSON.stringify(summary, null, 2));
 console.log("Wrote simulation-summary.json");

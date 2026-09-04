@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ABC Tutoring — prototype walkthrough</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  @page { size: 13.333in 7.5in; margin: 0; }
+
+  :root{
+    --paper:#FCFCFA; --tint:#EEF3FA; --ink:#1B2A4A; --soft:#4C5B77;
+    --rule:#C9D6E8; --bar:#2D4470; --highlight:#FFD84D; --open:#2F6B4F;
+    --display:"Bricolage Grotesque","Trebuchet MS",sans-serif;
+    --body:"Source Sans 3","Segoe UI",Helvetica,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#8894a8;font-family:var(--body);color:var(--ink)}
+
+  .slide{
+    width:13.333in;height:7.5in;background:var(--paper);
+    padding:.72in .8in .6in;position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+    page-break-after:always;break-after:page;
+  }
+  .slide:last-child{page-break-after:auto;break-after:auto}
+  @media screen{ .slide{margin:0 auto 18px;box-shadow:0 3px 18px rgba(0,0,0,.3)} }
+
+  h1{font-family:var(--display);font-weight:700;font-size:52pt;line-height:1.02;
+     letter-spacing:-.02em;margin:0 0 .18in}
+  h2{font-family:var(--display);font-weight:700;font-size:27pt;line-height:1.1;
+     letter-spacing:-.015em;margin:0 0 .06in}
+  .kicker{font-size:13pt;color:var(--soft);margin:0 0 .36in}
+  .swipe{background:linear-gradient(var(--highlight),var(--highlight)) 0 64%/100% .56em no-repeat;
+         padding:0 .1em}
+
+  .num{font-family:var(--display);font-weight:700;font-size:15pt;color:var(--ink)}
+  p{margin:0 0 .12in;font-size:12.5pt;line-height:1.5}
+  .soft{color:var(--soft)}
+  strong{font-weight:600}
+
+  .foot{position:absolute;left:.8in;right:.8in;bottom:.34in;
+        border-top:1px solid var(--rule);padding-top:.11in;
+        font-size:8.5pt;color:var(--soft);display:flex;justify-content:space-between}
+
+  /* ---- charts: one series, one hue, direct labels ---- */
+  .chart{margin:0}
+  .row{display:grid;grid-template-columns:1.55in 1fr auto;align-items:center;
+       gap:0 .16in;margin-bottom:.155in}
+  .row-label{font-size:12pt;font-weight:600;text-align:right}
+  .track{background:var(--tint);height:.29in;border-radius:2px;position:relative}
+  .fill{background:var(--bar);height:100%;border-radius:2px 4px 4px 2px}
+  .row-val{font-size:11.5pt;color:var(--soft);white-space:nowrap;min-width:1.5in}
+  .row-val b{color:var(--ink);font-weight:600}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 .5in;flex:1}
+  .cols-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 .42in}
+  .closer{margin-top:auto;margin-bottom:.28in;border-top:1px solid var(--rule);padding-top:.26in;
+          display:grid;grid-template-columns:2.5in 1fr;gap:0 .4in;align-items:start}
+  .closer h3{font-family:var(--display);font-weight:700;font-size:17pt;margin:0;line-height:1.15}
+  .closer p{font-size:12pt;line-height:1.55;margin:0}
+
+  .finding{border-top:2px solid var(--ink);padding-top:.2in}
+  .finding h3{font-family:var(--display);font-weight:700;font-size:17pt;margin:0 0 .14in;line-height:1.15}
+  .finding p{font-size:12pt;line-height:1.55;margin:0 0 .17in}
+
+  .qa{border-top:1px solid var(--rule);padding:.2in 0}
+  .qa:last-child{border-bottom:1px solid var(--rule)}
+  .qa-q{font-family:var(--display);font-weight:700;font-size:14pt;margin:0 0 .05in}
+  .qa-a{font-size:11.5pt;color:var(--soft);margin:0;line-height:1.45}
+
+  .phone{width:3.05in;border:1px solid var(--rule);border-radius:.16in;overflow:hidden;
+         background:var(--paper);height:4.75in;position:relative}
+  .phone img{width:100%;display:block;position:absolute;top:0;left:0}
+  .phone.lower img{top:-5.35in}
+
+  .stat{margin-bottom:.2in}
+  .stat-n{font-family:var(--display);font-weight:700;font-size:34pt;line-height:1;
+          letter-spacing:-.02em;display:block}
+  .stat-l{font-size:10.5pt;color:var(--soft);display:block;margin-top:.04in}
+
+  .note{background:var(--tint);border-radius:.06in;padding:.19in .21in;font-size:11pt;
+        color:var(--soft);line-height:1.5}
+  ul{margin:0 0 .2in;padding-left:1.05em;font-size:12.5pt;line-height:1.6}
+  li{margin-bottom:.1in}
+</style>
+</head>
+<body>
+
+<!-- 1 ------------------------------------------------------------------ -->
+<section class="slide">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;max-width:9.2in">
+    <p class="kicker" style="margin-bottom:.22in">ABC Tutoring &middot; prototype walkthrough</p>
+    <h1>A website that takes<br>bookings off <span class="swipe">your phone</span></h1>
+    <p style="font-size:14pt;max-width:6.6in;margin-top:.1in">
+      You said it all runs through your phone now and it's getting to be a lot. So the site does
+      two jobs: let parents book a tutor without calling you, and quietly tell you each week
+      what's working.
+    </p>
+  </div>
+  <div class="foot"><span>Prepared for Dana, ABC Tutoring</span><span>1 / 5</span></div>
+</section>
+
+<!-- 2 ------------------------------------------------------------------ -->
+<section class="slide">
+  <h2>What a parent sees</h2>
+  <p class="kicker">Built for a phone first, because that's how nearly everyone reaches you.</p>
+
+  <div style="display:grid;grid-template-columns:3.05in 3.05in 1fr;gap:0 .45in;flex:1">
+    <div class="phone"><img src="shot-full.png" alt="ABC Tutoring home page"></div>
+    <div class="phone lower"><img src="shot-full.png" alt="The tutor list"></div>
+    <div>
+      <ul>
+        <li>A friendly opening that says who you teach, then a button straight to the tutors.</li>
+        <li>All six tutors with photo, subjects, grade levels, hourly rate and open times.</li>
+        <li>Filter by subject &mdash; math, science or reading.</li>
+        <li>Tap a time to book it. The form asks your name and email, the student's first name
+            and grade, and the subject.</li>
+        <li><strong>A booked time stops showing as available</strong>, so nobody is offered a
+            slot that's gone.</li>
+      </ul>
+      <div class="note">
+        Photos are initials for now. Send headshots and they drop straight in.
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>ABC Tutoring &middot; prototype walkthrough</span><span>2 / 5</span></div>
+</section>
+
+<!-- 3 ------------------------------------------------------------------ -->
+<section class="slide">
+  <h2>The four things you wanted to know</h2>
+  <p class="kicker">Each one is now measured, and lands in your weekly email.</p>
+
+  <div class="cols">
+    <div>
+      <div class="qa">
+        <p class="qa-q">Which tutors do people look at most?</p>
+        <p class="qa-a">Every tutor a parent scrolls to is counted, and set against how often they're actually booked.</p>
+      </div>
+      <div class="qa">
+        <p class="qa-q">Do they book, or just leave?</p>
+        <p class="qa-a">The whole path is tracked, including which form field someone was on when they gave up.</p>
+      </div>
+      <div class="qa">
+        <p class="qa-q">Which subjects are people looking for?</p>
+        <p class="qa-a">Including subjects you don't teach &mdash; a parent who finds nothing can say what they wanted.</p>
+      </div>
+      <div class="qa">
+        <p class="qa-q">Is the local Facebook group working?</p>
+        <p class="qa-a">Every visit records where it came from, so each source can be judged on bookings, not clicks.</p>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:12pt;font-weight:600;margin-bottom:.2in">
+        Where visitors go, over one week</p>
+      <div class="chart">
+        <div class="row"><span class="row-label">Visited the site</span>
+          <div class="track"><div class="fill" style="width:100%"></div></div>
+          <span class="row-val"><b>248</b> &nbsp;visits</span></div>
+        <div class="row"><span class="row-label">Started booking</span>
+          <div class="track"><div class="fill" style="width:25.4%"></div></div>
+          <span class="row-val"><b>63</b> &nbsp;25%</span></div>
+        <div class="row"><span class="row-label">Booked a session</span>
+          <div class="track"><div class="fill" style="width:16.1%"></div></div>
+          <span class="row-val"><b>40</b> &nbsp;16%</span></div>
+      </div>
+      <p style="font-size:11.5pt;margin-top:.24in;line-height:1.5">
+        Those visits produced <strong>291 looks at a tutor</strong> &mdash; most parents
+        compare two or three before choosing.
+      </p>
+      <div class="note" style="margin-top:.16in">
+        23 people started the form and stopped. Ten of them stopped at the email box &mdash;
+        worth watching once real parents are using it.
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Figures from a simulated week of traffic, not real visitors</span><span>3 / 5</span></div>
+</section>
+
+<!-- 4 ------------------------------------------------------------------ -->
+<section class="slide">
+  <h2>What a week of this looks like</h2>
+  <p class="kicker">Run on simulated visitors, to show the kind of answer you'll get.</p>
+
+  <div class="cols" style="gap:0 .55in">
+    <div>
+      <p style="font-size:12pt;font-weight:600;margin-bottom:.2in">
+        Bookings per 100 visits, by where people came from</p>
+      <div class="chart">
+        <div class="row"><span class="row-label">Word of mouth</span>
+          <div class="track"><div class="fill" style="width:96%"></div></div>
+          <span class="row-val"><b>27%</b> &nbsp;13 of 49</span></div>
+        <div class="row"><span class="row-label">Facebook group</span>
+          <div class="track"><div class="fill" style="width:71%"></div></div>
+          <span class="row-val"><b>20%</b> &nbsp;19 of 96</span></div>
+        <div class="row"><span class="row-label">Flyer QR code</span>
+          <div class="track"><div class="fill" style="width:63%"></div></div>
+          <span class="row-val"><b>18%</b> &nbsp;3 of 17</span></div>
+        <div class="row"><span class="row-label">Google</span>
+          <div class="track"><div class="fill" style="width:27%"></div></div>
+          <span class="row-val"><b>8%</b> &nbsp;4 of 53</span></div>
+        <div class="row"><span class="row-label">Instagram</span>
+          <div class="track"><div class="fill" style="width:11%"></div></div>
+          <span class="row-val"><b>3%</b> &nbsp;1 of 33</span></div>
+      </div>
+      <p style="font-size:11.5pt;margin-top:.26in;line-height:1.5">
+        <strong>The Facebook group is working.</strong> It sent the most people of any source
+        and nearly half your bookings. Instagram sent 33 people and produced one booking.
+      </p>
+    </div>
+
+    <div>
+      <p style="font-size:12pt;font-weight:600;margin-bottom:.2in">
+        Bookings per 100 views, by tutor</p>
+      <div class="chart">
+        <div class="row"><span class="row-label">Daniel Okafor</span>
+          <div class="track"><div class="fill" style="width:98%"></div></div>
+          <span class="row-val"><b>20%</b> &nbsp;11 of 56</span></div>
+        <div class="row"><span class="row-label">Grace Kim</span>
+          <div class="track"><div class="fill" style="width:79%"></div></div>
+          <span class="row-val"><b>16%</b> &nbsp;6 of 37</span></div>
+        <div class="row"><span class="row-label">Tomas Alvarez</span>
+          <div class="track"><div class="fill" style="width:74%"></div></div>
+          <span class="row-val"><b>15%</b> &nbsp;6 of 40</span></div>
+        <div class="row"><span class="row-label">Maya Rivera</span>
+          <div class="track"><div class="fill" style="width:62%"></div></div>
+          <span class="row-val"><b>13%</b> &nbsp;9 of 71</span></div>
+        <div class="row"><span class="row-label">Priya Raman</span>
+          <div class="track"><div class="fill" style="width:53%"></div></div>
+          <span class="row-val"><b>11%</b> &nbsp;7 of 65</span></div>
+        <div class="row"><span class="row-label">Ruth Bennett</span>
+          <div class="track"><div class="fill" style="width:22%"></div></div>
+          <span class="row-val"><b>5%</b> &nbsp;1 of 22</span></div>
+      </div>
+      <p style="font-size:11.5pt;margin-top:.26in;line-height:1.5">
+        <strong>The most-looked-at tutor isn't the most booked.</strong> Maya was viewed most
+        often, but Daniel turned a smaller audience into more sessions.
+      </p>
+      <div class="note" style="margin-top:.16in">
+        Twelve parents filtered for a subject you don't teach. Five said what they wanted:
+        <strong>Spanish&nbsp;&times;2, French&nbsp;&times;2, Physics&nbsp;&times;1.</strong>
+      </div>
+    </div>
+  </div>
+  <div class="foot"><span>Figures from a simulated week of traffic, not real visitors</span><span>4 / 5</span></div>
+</section>
+
+<!-- 5 ------------------------------------------------------------------ -->
+<section class="slide">
+  <h2>How you'll actually use it</h2>
+  <p class="kicker">You said you're not very technical and you work from your phone. So you don't have to log into anything.</p>
+
+  <div class="cols-3">
+    <div class="finding">
+      <h3>A weekly email</h3>
+      <p>Every Monday: visits, bookings, which tutors got looked at, where people came from,
+         and any subject a parent asked for that you don't teach.</p>
+      <p>Readable on a phone. Nothing to log into unless you want to.</p>
+    </div>
+
+    <div class="finding">
+      <h3>Nothing about the children</h3>
+      <p>Your visitors are parents and kids, so the site counts <em>what happened</em>, never
+         <em>who</em>.</p>
+      <p>No names, email addresses or phone numbers ever leave the booking form. No screen
+         recording. Nothing follows a person between visits.</p>
+      <p>Booking details stay with you.</p>
+    </div>
+
+    <div class="finding">
+      <h3>What this doesn't do yet</h3>
+      <p>Bookings are saved in the visitor's own browser, not a shared calendar &mdash; so two
+         parents could still claim the same time.</p>
+      <p>The confirmation email isn't really sent yet.</p>
+      <p>Both need a proper booking system behind the site. That's the next piece of work,
+         and worth doing before you share the link.</p>
+    </div>
+  </div>
+
+  <div class="closer">
+    <h3>What I need<br>from you</h3>
+    <p>Photos of the six tutors, and their real weekly availability. Then tell me whether you
+       want to approve a booking before it's confirmed, or let the time be taken straight away
+       &mdash; right now it's taken straight away, which is simpler for the parent but gives you
+       no say. Once a proper booking system is behind it, the link is yours to post in the
+       Facebook group.</p>
+  </div>
+
+  <div class="foot"><span>ABC Tutoring &middot; prototype walkthrough</span><span>5 / 5</span></div>
+</section>
+
+</body>
+</html>
