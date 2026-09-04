@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABC Tutoring — K–12 math, science and reading</title>
+<meta name="description" content="Six local tutors for K–12 math, science and reading. See who's free this week and book a session.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="wordmark" href="#top">ABC&nbsp;Tutoring</a>
+  <a class="topbar-cta" href="#tutors">See tutors</a>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top">
+    <h1>Homework help that <span class="swipe">actually sticks</span></h1>
+    <p class="hero-sub">Six local tutors for K&ndash;12 math, science and reading. Most of our students are in middle school, and most come to us from a parent who told a friend.</p>
+    <a class="btn btn-primary" href="#tutors" data-cta="hero">See our tutors</a>
+
+    <ul class="subject-rows" aria-label="What we teach">
+      <li><span class="subject-name">Math</span><span class="subject-count">4 tutors</span><span class="subject-detail">Elementary through Algebra&nbsp;II</span></li>
+      <li><span class="subject-name">Science</span><span class="subject-count">1 tutor</span><span class="subject-detail">General science and biology</span></li>
+      <li><span class="subject-name">Reading</span><span class="subject-count">1 tutor</span><span class="subject-detail">Phonics and reading comprehension</span></li>
+    </ul>
+  </section>
+
+  <section class="tutors" id="tutors">
+    <h2>Our tutors</h2>
+    <p class="section-note">Pick a time that works and book it. You'll get a confirmation by email.</p>
+
+    <div class="filters" role="group" aria-label="Filter tutors by subject">
+      <button class="chip is-on" data-filter="all" aria-pressed="true">Everyone</button>
+      <button class="chip" data-filter="Math" aria-pressed="false">Math</button>
+      <button class="chip" data-filter="Science" aria-pressed="false">Science</button>
+      <button class="chip" data-filter="Reading" aria-pressed="false">Reading</button>
+      <button class="chip" data-filter="other" aria-pressed="false">Something else</button>
+    </div>
+
+    <ol class="tutor-list" id="tutor-list"></ol>
+
+    <div class="no-match" id="no-match" hidden>
+      <p class="no-match-head">We don't have a <span id="no-match-subject">tutor</span> tutor yet.</p>
+      <p>Tell us what you're looking for and we'll let you know when we do.</p>
+      <form class="ask-form" id="ask-form">
+        <label class="sr-only" for="ask-subject">Subject you're looking for</label>
+        <input id="ask-subject" name="subject" type="text" placeholder="e.g. Spanish, Chemistry" required>
+        <button class="btn btn-primary" type="submit">Send</button>
+      </form>
+      <p class="ask-thanks" id="ask-thanks" hidden>Thanks — we've noted it.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  <p>ABC Tutoring &middot; K&ndash;12 math, science and reading</p>
+  <p class="foot-proto">Prototype. Bookings are stored in this browser and no email is actually sent.</p>
+</footer>
+
+<div class="sheet-scrim" id="scrim" hidden></div>
+
+<section class="sheet" id="sheet" hidden aria-modal="true" role="dialog" aria-labelledby="sheet-title">
+  <button class="sheet-close" id="sheet-close" aria-label="Close">&times;</button>
+
+  <div id="sheet-form-view">
+    <h2 id="sheet-title">Book <span id="sheet-tutor">a tutor</span></h2>
+    <p class="sheet-slot" id="sheet-slot"></p>
+
+    <form id="booking-form" novalidate>
+      <div class="field">
+        <label for="parent-name">Your name</label>
+        <input id="parent-name" name="parentName" type="text" autocomplete="name" required
+               data-ph-mask="true">
+      </div>
+      <div class="field">
+        <label for="parent-email">Your email</label>
+        <input id="parent-email" name="parentEmail" type="email" autocomplete="email" required
+               data-ph-mask="true">
+        <p class="field-help">We'll send the confirmation here.</p>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="student-name">Student's first name</label>
+          <input id="student-name" name="studentName" type="text" required data-ph-mask="true">
+        </div>
+        <div class="field field-narrow">
+          <label for="student-grade">Grade</label>
+          <select id="student-grade" name="studentGrade" required>
+            <option value="">&mdash;</option>
+            <option>K</option><option>1</option><option>2</option><option>3</option>
+            <option>4</option><option>5</option><option>6</option><option>7</option>
+            <option>8</option><option>9</option><option>10</option><option>11</option>
+            <option>12</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="booking-subject">Subject</label>
+        <select id="booking-subject" name="subject" required></select>
+      </div>
+
+      <p class="form-error" id="form-error" hidden></p>
+      <button class="btn btn-primary btn-block" type="submit">Book this session</button>
+      <p class="privacy-note">We only keep what's on this form, and we never share it.</p>
+    </form>
+  </div>
+
+  <div id="sheet-done-view" hidden>
+    <p class="done-mark" aria-hidden="true">&check;</p>
+    <h2>Booked</h2>
+    <p class="done-line" id="done-line"></p>
+    <p class="done-sub">A confirmation is on its way to <span id="done-email"></span>. That time is now off the schedule.</p>
+    <button class="btn btn-primary btn-block" id="done-close">Back to tutors</button>
+  </div>
+</section>
+
+<script src="config.js"></script>
+<script src="analytics.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
