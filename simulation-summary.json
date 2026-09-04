@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-09-04T02:54:13.493Z",
+  "run_id": "run_202609040254",
+  "days": 8,
+  "sessions": 248,
+  "events": 755,
+  "bookings": 40,
+  "by_event": {
+    "$pageview": 248,
+    "tutor_viewed": 291,
+    "booking_started": 63,
+    "booking_completed": 40,
+    "subject_filtered": 73,
+    "booking_abandoned": 23,
+    "subject_unavailable": 12,
+    "subject_requested": 5
+  },
+  "tutor_views": {
+    "Tomas Alvarez": 40,
+    "Maya Rivera": 71,
+    "Daniel Okafor": 56,
+    "Grace Kim": 37,
+    "Ruth Bennett": 22,
+    "Priya Raman": 65
+  },
+  "bookings_by_tutor": {
+    "Tomas Alvarez": 6,
+    "Maya Rivera": 9,
+    "Grace Kim": 6,
+    "Daniel Okafor": 11,
+    "Priya Raman": 7,
+    "Ruth Bennett": 1
+  },
+  "sessions_by_source": {
+    "search": 53,
+    "flyer_qr": 17,
+    "facebook_group": 96,
+    "instagram": 33,
+    "direct": 49
+  },
+  "bookings_by_source": {
+    "flyer_qr": 3,
+    "facebook_group": 19,
+    "direct": 13,
+    "search": 4,
+    "instagram": 1
+  },
+  "abandoned_at_field": {
+    "studentName": 4,
+    "parentName": 4,
+    "parentEmail": 10,
+    "subject": 2,
+    "studentGrade": 3
+  },
+  "subjects_requested": {
+    "Physics": 1,
+    "Spanish": 2,
+    "French": 2
+  }
+}

@@ -10,6 +10,7 @@
 const KEY  = process.env.POSTHOG_KEY;
 const HOST = process.env.POSTHOG_HOST || "https://us.i.posthog.com";
 const DRY  = process.argv.includes("--dry-run");
+const RUN  = "run_" + new Date().toISOString().slice(0,16).replace(/[-:T]/g,"");
 
 if (!KEY && !DRY) {
   console.error("Set POSTHOG_KEY, or pass --dry-run.");
@@ -54,7 +55,7 @@ const queue = [];
 function emit(event, distinct_id, ts, props) {
   queue.push({
     event,
-    properties: { distinct_id, $lib: "abc-simulation", ...props },
+    properties: { distinct_id, $lib: "abc-simulation", run_id: RUN, ...props },
     timestamp: new Date(ts).toISOString()
   });
 }
@@ -153,6 +154,26 @@ queue.sort((a, b) => a.timestamp < b.timestamp ? -1 : 1);
 const tally = queue.reduce((m, e) => (m[e.event] = (m[e.event] || 0) + 1, m), {});
 console.log(`${DAYS + 1} days · ${sessions} sessions · ${queue.length} events · ${bookings} bookings`);
 console.table(tally);
+
+/* Write down what this run actually contained, so the numbers can be checked
+   later without querying PostHog. */
+function countBy(event, prop) {
+  return queue.filter(e => e.event === event)
+    .reduce((m, e) => (m[e.properties[prop]] = (m[e.properties[prop]] || 0) + 1, m), {});
+}
+const summary = {
+  generated_at: new Date().toISOString(), run_id: RUN,
+  days: DAYS + 1, sessions, events: queue.length, bookings,
+  by_event: tally,
+  tutor_views:      countBy("tutor_viewed", "tutor"),
+  bookings_by_tutor: countBy("booking_completed", "tutor"),
+  sessions_by_source: countBy("$pageview", "traffic_source"),
+  bookings_by_source: countBy("booking_completed", "traffic_source"),
+  abandoned_at_field: countBy("booking_abandoned", "last_field"),
+  subjects_requested: countBy("subject_requested", "subject")
+};
+require("fs").writeFileSync("simulation-summary.json", JSON.stringify(summary, null, 2));
+console.log("Wrote simulation-summary.json");
 
 if (DRY) { console.log("\nDry run — nothing sent."); process.exit(0); }
 
